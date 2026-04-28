@@ -71,12 +71,15 @@ The development followed a structured **Software Development Lifecycle (SDLC)**:
 
 ---
 
-**Author:** Masole Keabetswe 
+**Author:** Masole Keabetswe
+
 **Role:** Project Manager
 <br>
+
 **Author:** Matlhaga Amogelang  
 **Role:** Lead Developer
 <br>
+
 **Author:** Mathe Lesego  
 **Role:** Sacretary
 <br>
