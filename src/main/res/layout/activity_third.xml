@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- this is the main layout for the dashboard or home screen of the app -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context=".ThirdActivity">
+
+    <!-- this blue header bar contains the app name and the logout icon -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:background="#0D47A1"
+        android:gravity="center_vertical">
+        android:padding="12dp">
+
+        <!-- the name of the app displayed in the header -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/title_home"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <!-- the logout button represented by a power off icon -->
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@android:drawable/ic_lock_power_off"
+            app:tint="@color/white"
+            android:onClick="login_page"
+            android:contentDescription="Logout" />
+
+    </LinearLayout>
+
+    <!-- the main scrollable section of the dashboard containing all the finance summaries -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- personalized greeting for the logged in user -->
+            <TextView
+                android:id="@+id/tv_username"
+                android:text="@string/welcome_back"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <!-- a small subtitle for the overview section -->
+            <TextView
+                android:text="@string/money_overview"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_marginBottom="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <!-- the main balance card showing the available money -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#0D47A1"
+                android:padding="20dp"
+                android:layout_marginBottom="20dp"
+                android:elevation="4dp">
+
+                <!-- label for the total available balance -->
+                <TextView
+                    android:text="@string/in_my_pocket"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <!-- the actual balance amount displayed in large green text -->
+                <TextView
+                    android:id="@+id/tvPocket"
+                    android:text="R 0.00"
+                    android:textColor="#00E676"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <!-- a row containing the income and expenses summary blocks -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_marginBottom="12dp">
+
+                <!-- small card for the total income amount -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="#0D47A1"
+                    android:padding="16dp"
+                    android:layout_marginEnd="6dp"
+                    android:elevation="3dp">
+
+                    <TextView
+                        android:text="@string/income_label"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/tvIncome"
+                        android:text="R 0.00"
+                        android:textColor="#00E676"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <!-- small card for the total expenses amount -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="#0D47A1"
+                    android:padding="16dp"
+                    android:layout_marginStart="6dp"
+                    android:elevation="3dp">
+
+                    <TextView
+                        android:text="@string/expenses_label"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/tvExpenses"
+                        android:text="R 0.00"
+                        android:textColor="#FF5252"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- another row for showing minimum and maximum budget targets -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_marginBottom="20dp">
+
+                <!-- summary card for the minimum monthly budget goal -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="#0D47A1"
+                    android:padding="16dp"
+                    android:layout_marginEnd="6dp"
+                    android:elevation="3dp">
+
+                    <TextView
+                        android:text="@string/min_budget_label"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/tvMinBudget"
+                        android:text="R 0.00"
+                        android:textColor="#00E676"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <!-- summary card for the maximum monthly spending limit -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="#0D47A1"
+                    android:padding="16dp"
+                    android:layout_marginStart="6dp"
+                    android:elevation="3dp">
+
+                    <TextView
+                        android:text="@string/max_budget_label"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/tvMaxBudget"
+                        android:text="R 0.00"
+                        android:textColor="#FF5252"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- label for the list of transactions recorded in the app -->
+            <TextView
+                android:text="@string/recent_transactions"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <!-- this container is dynamically populated with individual transaction rows -->
+            <LinearLayout
+                android:id="@+id/transactionsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- a floating button positioned to allow the user to quickly add a new expense -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <Button
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="end"
+            android:backgroundTint="#0D47A1"
+            android:text="@string/add_button"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:onClick="Expenses_page"/>
+    </FrameLayout>
+
+    <!-- the main navigation menu fixed at the bottom of the dashboard screen -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#0D47A1"
+        app:menu="@menu/bottom_menu"
+        app:labelVisibilityMode="labeled"
+        app:itemTextColor="@color/white"
+        app:itemIconTint="@color/white" />
+
+</LinearLayout>

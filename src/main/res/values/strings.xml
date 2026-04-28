@@ -1,0 +1,79 @@
+<!-- This file stores all the text used throughout the app in one place -->
+<resources>
+    <!-- The name of the application -->
+    <string name="app_name">PennyWise</string>
+
+    <!-- Text shown on the very first screen when the app opens -->
+    <string name="welcome_text">Ready to take charge of your money?</string>
+    <string name="welcome_text2">Let PennyWise help you track your spending, grow your savings, and make every penny count!</string>
+    <string name="btn_started">Get started</string>
+
+    <!-- Text used on the registration and login screens -->
+    <string name="btn_register">Register</string>
+    <string name="login_text">Already have an account?</string>
+    <string name="login_text2">Login</string>
+    <string name="btn_login">Login</string>
+    <string name="register_text">Dont have an account?</string>
+    <string name="register_text2">Register</string>
+
+    <!-- Progress page string values -->
+    <string name="title_progress">Progress</string>
+    <string name="your_progress">Your Progress</string>
+    <string name="label_level">Level</string>
+    <string name="label_streak">Daily Streak</string>
+    <string name="label_achievements">Achievements</string>
+
+    <!-- Dashboard/Home strings -->
+    <string name="title_home">Pennywise</string>
+    <string name="welcome_back">Welcome back</string>
+    <string name="money_overview">Your Money Overview</string>
+    <string name="in_my_pocket">In My Pocket</string>
+    <string name="income_label">Income</string>
+    <string name="expenses_label">Expenses</string>
+    <string name="min_budget_label">Min Budget</string>
+    <string name="max_budget_label">Max Budget</string>
+    <string name="recent_transactions">Recent Transactions</string>
+    <string name="add_button">+</string>
+
+    <!-- Budget Settings strings -->
+    <string name="title_budget">Budget Settings</string>
+    <string name="label_monthly_income">Monthly Income / Starting Balance</string>
+    <string name="hint_income">Enter Income (R)</string>
+    <string name="label_min_budget">Minimum Monthly Budget</string>
+    <string name="hint_min_goal">Minimum Goal (R)</string>
+    <string name="label_max_budget">Maximum Monthly Budget</string>
+    <string name="hint_spending_limit">Spending Limit (R)</string>
+    <string name="btn_save_budget">Save Budget Goals</string>
+
+    <!-- Report strings -->
+    <string name="title_report">Budget Visuals</string>
+    <string name="label_expense_reports">Expense Reports</string>
+    <string name="btn_download_all">Download All</string>
+    <string name="label_category_breakdown">Category Breakdown</string>
+    <string name="label_from">From: </string>
+    <string name="label_to">To: </string>
+    <string name="hint_date_format">DD/MM/YYYY</string>
+    <string name="btn_filter_period">Filter Period</string>
+    <string name="label_individual_transactions">Individual Transactions</string>
+    <string name="btn_view_receipt">View Receipt</string>
+
+    <!-- Add Expense strings -->
+    <string name="title_add_expense">Expenses</string>
+    <string name="label_amount">Amount (R)</string>
+    <string name="label_description">Description</string>
+    <string name="label_category">Category</string>
+    <string name="label_date">Date</string>
+    <string name="hint_select_date">Select Date</string>
+    <string name="label_start_time">Start Time</string>
+    <string name="label_end_time">End Time</string>
+    <string name="hint_time">00:00</string>
+    <string name="label_upload_receipt">Upload Receipt</string>
+    <string name="btn_choose_image">Choose Image</string>
+    <string name="btn_save_expense">Save Expense</string>
+
+    <!-- Input Hints -->
+    <string name="hint_username">Username</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_confirm_password">Confirm password</string>
+</resources>

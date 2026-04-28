@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This screen shows a visual report of the user's spending habits using a chart and a list -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ReportActivity">
+
+    <!-- The top bar shows the screen title and includes a logout button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:background="#0D47A1"
+        android:gravity="center_vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/title_report"
+            android:textColor="@android:color/white"
+            android:textSize="25sp"
+            android:textStyle="bold"/>
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@android:drawable/ic_lock_power_off"
+            app:tint="@color/white"
+            android:onClick="login_page"
+            android:contentDescription="Logout" />
+
+    </LinearLayout>
+
+    <!-- The main area can scroll if there are many spending categories to display -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- The title for the report section and a button to download all receipt images -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:text="@string/label_expense_reports"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+
+                    <Button
+                        android:id="@+id/btnDownloadAll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/btn_download_all"
+                        android:textSize="12sp"
+                        android:backgroundTint="#0D47A1"
+                        android:textColor="@android:color/white"
+                        android:onClick="downloadAllReceipts"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical">
+
+                    <!-- Vertical column for the two date fields -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <!-- From Date row -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+                            <TextView
+                                android:layout_width="45dp"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_from"
+                                android:textColor="@color/black" />
+                            <EditText
+                                android:id="@+id/etFromDate"
+                                android:layout_width="85dp"
+                                android:layout_height="28dp"
+                                android:hint="@string/hint_date_format"
+                                android:inputType="date"
+                                android:focusable="false"
+                                android:clickable="true"
+                                android:textSize="11sp"
+                                android:textColor="@color/black"
+                                android:background="@null"
+                                android:padding="2dp" />
+                        </LinearLayout>
+
+                        <!-- To Date row -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+                            <TextView
+                                android:layout_width="45dp"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_to"
+                                android:textColor="@color/black" />
+                            <EditText
+                                android:id="@+id/etToDate"
+                                android:layout_width="85dp"
+                                android:layout_height="28dp"
+                                android:hint="@string/hint_date_format"
+                                android:inputType="date"
+                                android:focusable="false"
+                                android:clickable="true"
+                                android:textSize="11sp"
+                                android:textColor="@color/black"
+                                android:background="@null"
+                                android:padding="2dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Filter Button next to the dates -->
+                    <Button
+                        android:id="@+id/btnFilter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/btn_filter_period"
+                        android:textColor="@android:color/white"
+                        android:backgroundTint="#0D47A1"
+                        android:textSize="12sp"
+                        android:minWidth="0dp"
+                        android:paddingHorizontal="12dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- A colorful pie chart that shows how spending is split between categories -->
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/pieChart"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginBottom="20dp"/>
+
+            <!-- A text heading for the detailed category list below -->
+            <TextView
+                android:text="@string/label_category_breakdown"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!-- An area where the app will dynamically add details for each spending category -->
+            <LinearLayout
+                android:id="@+id/breakdownContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="20dp"/>
+
+            <!-- A heading for the list of individual transactions -->
+            <TextView
+                android:text="@string/label_individual_transactions"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!-- An area where the app will list all the individual transactions -->
+            <LinearLayout
+                android:id="@+id/transactionsListContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Navigation buttons at the bottom for switching between the app's main screens -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#0D47A1"
+        app:menu="@menu/bottom_menu"
+        app:labelVisibilityMode="labeled"
+        app:itemTextColor="@color/white"
+        app:itemIconTint="@color/white"/>
+</LinearLayout>

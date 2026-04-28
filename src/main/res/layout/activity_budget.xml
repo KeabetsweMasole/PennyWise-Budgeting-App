@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- this is the main layout for the budget settings screen where users set their financial goals -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context=".BudgetActivity">
+
+    <!-- this is the blue header bar at the top of the budget settings page -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:background="#0D47A1"
+        android:gravity="center_vertical"
+        android:padding="10dp">
+
+        <!-- the title of the screen displayed in the header -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/title_budget"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <!-- the logout power icon located in the top right corner -->
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="30dp"
+            android:src="@android:drawable/ic_lock_power_off"
+            app:tint="@color/white"
+            android:onClick="login_page"
+            android:contentDescription="Logout" />
+    </LinearLayout>
+
+    <!-- the scroll view allows users to reach all input fields even on smaller screens -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- this container holds the labels and input fields for the budget configuration -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- label for the monthly income or starting balance field -->
+            <TextView
+                android:text="@string/label_monthly_income"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"/>
+            <!-- the input field where the user types in their total monthly income -->
+            <EditText
+                android:id="@+id/etPocket"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_income"
+                android:inputType="numberDecimal"
+                android:background="#E5E4E2"
+                android:padding="12dp"
+                android:layout_marginBottom="24dp"
+                android:autofillHints="none" />
+
+            <!-- label for the minimum monthly budget goal field -->
+            <TextView
+                android:text="@string/label_min_budget"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"/>
+            <!-- the input field for setting a minimum spending target -->
+            <EditText
+                android:id="@+id/etMinBudget"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_min_goal"
+                android:inputType="numberDecimal"
+                android:background="#E5E4E2"
+                android:padding="12dp"
+                android:layout_marginBottom="24dp"
+                android:autofillHints="none" />
+
+            <!-- label for the maximum monthly budget limit field -->
+            <TextView
+                android:text="@string/label_max_budget"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"/>
+            <!-- the input field where the user sets their maximum spending limit for the month -->
+            <EditText
+                android:id="@+id/etMaxBudget"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_spending_limit"
+                android:inputType="numberDecimal"
+                android:background="#E5E4E2"
+                android:padding="12dp"
+                android:layout_marginBottom="32dp"
+                android:autofillHints="none" />
+
+            <!-- the green save button that confirms and stores the new budget settings -->
+            <Button
+                android:id="@+id/btnSaveBudget"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_save_budget"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#00C853"
+                android:padding="5dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- the main navigation menu at the bottom of the screen -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#0D47A1"
+        app:menu="@menu/bottom_menu"
+        app:labelVisibilityMode="labeled"
+        app:itemTextColor="@color/white"
+        app:itemIconTint="@color/white"/>
+
+</LinearLayout>

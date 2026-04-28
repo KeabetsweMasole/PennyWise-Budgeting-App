@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- this is the main container for the login screen with scrolling enabled for better keyboard handling -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:fillViewport="true"
+    tools:context=".SecondActivity">
+
+    <!-- this vertical layout organizes the branding and login credentials fields -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="10dp">
+
+        <!-- this displays the official pennywise logo centered at the top of the login page -->
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/img_app_logo"
+            android:src="@drawable/pennywise3"
+            android:layout_marginTop="100dp"
+            android:layout_marginBottom="20dp"
+            />
+        <!-- the input field where users type their registered username -->
+        <EditText
+            android:id="@+id/et_login_username"
+            android:layout_width="350dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:hint="@string/hint_username"
+            android:textColorHint="@color/black"
+            android:inputType="text"
+            android:textColor="@color/black"
+            android:padding="10dp"
+            android:background="@drawable/white_boarder"
+            />
+        <!-- the input field where users type their secret password -->
+        <EditText
+            android:id="@+id/et_login_password"
+            android:layout_width="350dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:hint="@string/hint_password"
+            android:textColorHint="@color/black"
+            android:inputType="textPassword"
+            android:textColor="@color/black"
+            android:padding="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/white_boarder"
+            />
+        <!-- the blue login button that starts the authentication process -->
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_login"
+            android:textColor="@color/white"
+            android:backgroundTint="#1E88E5"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:onClick="home"
+            />
+
+        <!-- this section contains a link for users who need to create a new account -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="5dp"
+            android:padding="10dp">
+
+            <!-- static text prompting the user to register -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/register_text"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:layout_marginRight="5dp"
+                />
+            <!-- the clickable blue text that navigates to the registration screen -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/register_text2"
+                android:textColor="#1E88E5"
+                android:gravity="center"
+                android:layout_marginLeft="5dp"
+                android:onClick="register_page"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+</ScrollView>
