@@ -72,7 +72,6 @@ The development followed a structured **Software Development Lifecycle (SDLC)**:
 ---
 
 **Author:** Masole Keabetswe
-
 **Role:** Project Manager
 <br>
 
@@ -83,4 +82,5 @@ The development followed a structured **Software Development Lifecycle (SDLC)**:
 **Author:** Mathe Lesego  
 **Role:** Sacretary
 <br>
+
 **Date:** April 2026
