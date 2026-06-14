@@ -128,7 +128,7 @@ The development followed a structured Software Development Lifecycle (SDLC)**:
 2.  Database Design: Built a robust SQLite schema to handle expenses, categories, dates, and file paths for receipts.
 3.  UI/UX Overhaul: Migrated to a "Deep Blue" professional theme with elevated Material 3 cards for improved readability.
 4.  Security & Permissions: Implemented a modern "Open Document" intent system to handle receipt images securely within scoped storage requirements.
-5.  Validation Logic: Integrated real-time checks between **FinancePrefs** (Income) and the Database (Total Expenses).
+5.  Validation Logic: Integrated real-time checks between FinancePrefs (Income) and the Database (Total Expenses).
 
 
 
