@@ -6,84 +6,119 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-// this class handles all the interactions with the local sqlite database
+
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
         private const val DATABASE_NAME = "Pennywise.db"
         private const val DATABASE_VERSION = 1
-        private const val TABLE_EXPENSES = "expenses"
+        private const val EXPENSES_TABLE = "expenses"
 
-        // column names for the expense table
-        private const val COLUMN_ID = "id"
-        private const val COLUMN_AMOUNT = "amount"
-        private const val COLUMN_CATEGORY = "category"
-        private const val COLUMN_DESCRIPTION = "description"
-        private const val COLUMN_DATE = "date" // saved as YYYY-MM-DD for easier sorting
-        private const val COLUMN_START_TIME = "start_time"
-        private const val COLUMN_END_TIME = "end_time"
-        private const val COLUMN_RECEIPT_URI = "receipt_uri"
+        // Column names for our spreadsheet-like table.
+        private const val ID_COL = "id"
+        private const val AMOUNT_COL = "amount"
+        private const val CATEGORY_COL = "category"
+        private const val DESC_COL = "description"
+        private const val DATE_COL = "date"
+        private const val START_TIME_COL = "start_time"
+        private const val END_TIME_COL = "end_time"
+        private const val RECEIPT_COL = "receipt_uri"
     }
 
-    // creating the database table when the app is first installed
+    // This runs the very first time the app is opened to build the vault structure.
     override fun onCreate(db: SQLiteDatabase?) {
-        val createTable = ("CREATE TABLE " + TABLE_EXPENSES + "("
-                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + COLUMN_AMOUNT + " REAL,"
-                + COLUMN_CATEGORY + " TEXT,"
-                + COLUMN_DESCRIPTION + " TEXT,"
-                + COLUMN_DATE + " TEXT,"
-                + COLUMN_START_TIME + " TEXT,"
-                + COLUMN_END_TIME + " TEXT,"
-                + COLUMN_RECEIPT_URI + " TEXT" + ")")
-        db?.execSQL(createTable)
+        val createQuery = ("CREATE TABLE " + EXPENSES_TABLE + "("
+                + ID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + AMOUNT_COL + " REAL,"
+                + CATEGORY_COL + " TEXT,"
+                + DESC_COL + " TEXT,"
+                + DATE_COL + " TEXT,"
+                + START_TIME_COL + " TEXT,"
+                + END_TIME_COL + " TEXT,"
+                + RECEIPT_COL + " TEXT" + ")")
+        db?.execSQL(createQuery)
     }
 
-    // handling database updates if the version changes
+    // handling vault structure updates for any changes the user makes.
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_EXPENSES")
+        db?.execSQL("DROP TABLE IF EXISTS $EXPENSES_TABLE")
         onCreate(db)
     }
 
-    // adding a new expense record to the database
+    //recording a new expense entry.
     fun addExpense(amount: Float, category: String, description: String, date: String, startTime: String, endTime: String, receiptUri: String): Long {
         val db = this.writableDatabase
-        val values = ContentValues()
-        values.put(COLUMN_AMOUNT, amount)
-        values.put(COLUMN_CATEGORY, category)
-        values.put(COLUMN_DESCRIPTION, description)
-        values.put(COLUMN_DATE, date)
-        values.put(COLUMN_START_TIME, startTime)
-        values.put(COLUMN_END_TIME, endTime)
-        values.put(COLUMN_RECEIPT_URI, receiptUri)
+        val dataRow = ContentValues().apply {
+            put(AMOUNT_COL, amount)
+            put(CATEGORY_COL, category)
+            put(DESC_COL, description)
+            put(DATE_COL, date)
+            put(START_TIME_COL, startTime)
+            put(END_TIME_COL, endTime)
+            put(RECEIPT_COL, receiptUri)
+        }
 
-        val id = db.insert(TABLE_EXPENSES, null, values)
+        // closing the screen after an entry is made.
+        val generatedId = db.insert(EXPENSES_TABLE, null, dataRow)
         db.close()
-        return id
+        return generatedId
     }
 
-    // fetching expenses from the database within a specific date range
+    //checking the vault structure for specific dates.
     fun getExpensesByDate(startDate: String, endDate: String): Cursor {
         val db = this.readableDatabase
-        // selecting all expenses where the date falls between the two provided dates
-        return db.rawQuery("SELECT * FROM $TABLE_EXPENSES WHERE $COLUMN_DATE BETWEEN ? AND ? ORDER BY $COLUMN_DATE DESC", arrayOf(startDate, endDate))
+        return db.rawQuery(
+            "SELECT * FROM $EXPENSES_TABLE WHERE $DATE_COL BETWEEN ? AND ? ORDER BY $DATE_COL DESC", 
+            arrayOf(startDate, endDate)
+        )
     }
 
-    // fetching all expenses ever recorded
+    //sorts out saved transactions in descending order.
     fun getAllExpenses(): Cursor {
         val db = this.readableDatabase
-        return db.rawQuery("SELECT * FROM $TABLE_EXPENSES ORDER BY $COLUMN_DATE DESC", null)
+        return db.rawQuery("SELECT * FROM $EXPENSES_TABLE ORDER BY $DATE_COL DESC", null)
     }
 
-    // calculating the total amount spent across all recorded expenses
+    //calculates the grand total of all the expenses.
     fun getTotalExpenses(): Float {
         val db = this.readableDatabase
-        val cursor = db.rawQuery("SELECT SUM($COLUMN_AMOUNT) FROM $TABLE_EXPENSES", null)
+        val result = db.rawQuery("SELECT SUM($AMOUNT_COL) FROM $EXPENSES_TABLE", null)
         var total = 0f
-        if (cursor.moveToFirst()) {
-            total = cursor.getFloat(0)
+        if (result.moveToFirst()) {
+            total = result.getFloat(0)
         }
-        cursor.close()
+        result.close()
         return total
+    }
+
+    //the reset button for clearing all the expense records.
+    fun clearAllExpenses() {
+        val db = this.writableDatabase
+        db.delete(EXPENSES_TABLE, null, null)
+        db.close()
+    }
+
+    fun clearAllData() {
+        clearAllExpenses()
+    }
+
+    //counting how many expense entries have a receipt attached to them.
+    fun getCountWithReceipt(): Int {
+        val db = this.readableDatabase
+        val result = db.rawQuery("SELECT COUNT(*) FROM $EXPENSES_TABLE WHERE $RECEIPT_COL IS NOT NULL AND $RECEIPT_COL != ''", null)
+        var count = 0
+        if (result.moveToFirst()) count = result.getInt(0)
+        result.close()
+        return count
+    }
+
+    //returns the total number of the logs in the vault.
+    fun getCountTotal(): Int {
+        val db = this.readableDatabase
+        val result = db.rawQuery("SELECT COUNT(*) FROM $EXPENSES_TABLE", null)
+        var count = 0
+        if (result.moveToFirst()) count = result.getInt(0)
+        result.close()
+        return count
     }
 }

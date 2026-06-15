@@ -1,130 +1,179 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- this is the main container for the registration screen using a scroll view to allow scrolling when the keyboard is open -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white"
-    android:fillViewport="true"
     tools:context=".FirstActivity">
 
-    <!-- this vertical linear layout holds all the input fields and branding for the register page -->
-    <LinearLayout
+    <!-- scrollview for the main content -->
+    <ScrollView
+        android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:background="@color/background_gray"
+        android:fillViewport="true">
 
-        <!-- this displays the pennywise app logo at the top of the form -->
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/img_app_logo"
-            android:src="@drawable/pennywise3"
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="20dp"
-            />
-        <!-- the username input field where the user enters their chosen screen name -->
-        <EditText
-            android:id="@+id/et_username"
-            android:layout_width="350dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:hint="@string/hint_username"
-            android:textColorHint="@color/black"
-            android:inputType="text"
-            android:textColor="@color/black"
-            android:padding="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/white_boarder"
-            />
-        <!-- the email input field for the user to provide their contact address -->
-        <EditText
-            android:id="@+id/et_email"
-            android:layout_width="350dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:hint="@string/hint_email"
-            android:textColorHint="@color/black"
-            android:inputType="textEmailAddress"
-            android:textColor="@color/black"
-            android:padding="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/white_boarder"
-            />
-        <!-- the password input field where characters are hidden for security -->
-        <EditText
-            android:id="@+id/et_password"
-            android:layout_width="350dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:hint="@string/hint_password"
-            android:textColorHint="@color/black"
-            android:inputType="textPassword"
-            android:textColor="@color/black"
-            android:padding="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/white_boarder"
-            />
-        <!-- a second password field to make sure the user didn't make a mistake -->
-        <EditText
-            android:layout_width="350dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:id="@+id/et_confirm_password"
-            android:hint="@string/hint_confirm_password"
-            android:textColorHint="@color/black"
-            android:inputType="textPassword"
-            android:textColor="@color/black"
-            android:padding="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/white_boarder"
-            />
-        <!-- the register button that triggers the account creation logic -->
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btn_register"
-            android:text="@string/btn_register"
-            android:textColor="@color/white"
-            android:backgroundTint="#1E88E5"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp"
-            android:onClick="home"
-            />
-        <!-- this section contains the text and link for users who already have an account -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginTop="5dp"
-            android:orientation="horizontal">
+            android:paddingHorizontal="24dp"
+            android:paddingBottom="24dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
-            <!-- standard text asking if the user already has an account -->
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- pennywise branding -->
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:id="@+id/img_app_logo"
+                android:src="@drawable/pennywise3"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="32dp"
+                android:contentDescription="@string/desc_pennywise_logo" />
+
+            <!-- The main registration form inside a nice elevated card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/login_text"
-                android:textColor="@color/black"
-                android:gravity="center"
-                android:layout_marginRight="5dp"
-                />
-            <!-- the clickable login link that takes the user to the sign in page -->
-            <TextView
-                android:layout_width="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:cardBackgroundColor="@color/surface_light">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/title_create_account"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/primary_blue"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="24dp"/>
+
+                    <!-- User Details Input Fields -->
+                    <EditText
+                        android:id="@+id/et_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:hint="@string/hint_username"
+                        android:textColorHint="@color/text_secondary"
+                        android:inputType="text"
+                        android:textColor="@color/text_primary"
+                        android:padding="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/white_boarder"
+                        />
+
+                    <EditText
+                        android:id="@+id/et_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:hint="@string/hint_email"
+                        android:textColorHint="@color/text_secondary"
+                        android:inputType="textEmailAddress"
+                        android:textColor="@color/text_primary"
+                        android:padding="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/white_boarder"
+                        />
+
+                    <EditText
+                        android:id="@+id/et_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:hint="@string/hint_password"
+                        android:textColorHint="@color/text_secondary"
+                        android:inputType="textPassword"
+                        android:textColor="@color/text_primary"
+                        android:padding="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/white_boarder"
+                        />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:id="@+id/et_confirm_password"
+                        android:hint="@string/hint_confirm_password"
+                        android:textColorHint="@color/text_secondary"
+                        android:inputType="textPassword"
+                        android:textColor="@color/text_primary"
+                        android:padding="12dp"
+                        android:layout_marginBottom="24dp"
+                        android:background="@drawable/white_boarder"
+                        />
+
+                    <!-- register button -->
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:id="@+id/btn_register"
+                        android:text="@string/btn_register"
+                        android:textColor="@color/white"
+                        android:backgroundTint="@color/primary_blue"
+                        app:cornerRadius="8dp"
+                        android:onClick="home"
+                        />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- login hyperlink-->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/login_text2"
-                android:textColor="#1E88E5"
                 android:gravity="center"
-                android:onClick="login_page"
-                />
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/login_text"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginRight="5dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/login_text2"
+                    android:textColor="@color/primary_blue"
+                    android:textStyle="bold"
+                    android:onClick="login_page"
+                    />
+            </LinearLayout>
         </LinearLayout>
 
+    </ScrollView>
 
-    </LinearLayout>
+    <!-- This overlay shows up while we're "registering" the user  -->
+    <RelativeLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
 
-</ScrollView>
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:indeterminateTint="@color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="60dp"
+            android:text="@string/loading_registering"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
+</FrameLayout>

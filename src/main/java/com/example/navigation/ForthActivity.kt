@@ -10,210 +10,227 @@ import android.widget.*
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import org.json.JSONArray
-import org.json.JSONObject
+import com.google.android.material.navigation.NavigationView
 import java.util.*
 
 class ForthActivity : AppCompatActivity() {
 
-    private var receiptUri: Uri? = null
-    private lateinit var imgReceipt: ImageView
+    private var selectedReceiptUri: Uri? = null
+    private lateinit var receiptPreviewImage: ImageView
+    private lateinit var sideDrawerLayout: DrawerLayout
 
-    // handling the image picker result for uploading a receipt
-    private val pickImage = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
+    // picking an image from the phone's gallery.
+    private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
         uri?.let {
-            receiptUri = it
-            // take persistable permission to ensure we can access this image later
+            selectedReceiptUri = it
+            // "lock in" permission to read this file later if the app restarts.
             try {
-                val contentResolver = applicationContext.contentResolver
-                val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                contentResolver.takePersistableUriPermission(it, takeFlags)
+                contentResolver.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            // displaying the selected receipt image on the screen
-            imgReceipt.setImageURI(it)
+            // Showing the user a tiny preview of their receipt.
+            receiptPreviewImage.setImageURI(it)
         }
     }
 
-    // initializing the activity and setting up all the input fields and buttons
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // making the app look modern by drawing behind the system bars
         enableEdgeToEdge()
         setContentView(R.layout.activity_forth)
 
-        // adding padding to the main view so it doesn't get covered by the system status and navigation bars
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        sideDrawerLayout = findViewById(R.id.drawer_layout)
+        val sideNavView = findViewById<NavigationView>(R.id.nav_view)
+        val menuToggleIcon = findViewById<ImageView>(R.id.btn_menu)
+
+        menuToggleIcon.setOnClickListener {
+            sideDrawerLayout.openDrawer(GravityCompat.START)
+        }
+
+        // side menu navigation.
+        sideNavView.setNavigationItemSelectedListener { item ->
+            val targetIntent = when (item.itemId) {
+                R.id.nav_profile -> Intent(this, ProfileActivity::class.java)
+                R.id.nav_reports -> Intent(this, ReportActivity::class.java)
+                R.id.nav_settings -> Intent(this, SettingsActivity::class.java)
+                R.id.nav_about -> Intent(this, AboutActivity::class.java)
+                R.id.nav_manual -> Intent(this, ManualActivity::class.java)
+                R.id.nav_logout -> {
+                    processUserLogout()
+                    null
+                }
+                else -> null
+            }
+            
+            targetIntent?.let {
+                it.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                startActivity(it)
+            }
+            sideDrawerLayout.closeDrawer(GravityCompat.START)
+            true
+        }
+
+        // Adjusting layout padding.
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            view.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
 
-        // finding all the views from the layout file
-        val etAmount = findViewById<EditText>(R.id.etAmount)
-        val etDescription = findViewById<EditText>(R.id.etDescription)
-        val spinner = findViewById<Spinner>(R.id.spCategory)
-        val etCustomCategory = findViewById<EditText>(R.id.etCustomCategory)
-        val etDate = findViewById<EditText>(R.id.etDate)
-        val etStartTime = findViewById<EditText>(R.id.etStartTime)
-        val etEndTime = findViewById<EditText>(R.id.etEndTime)
-        val btnUpload = findViewById<Button>(R.id.btnUpload)
-        imgReceipt = findViewById(R.id.imgReceipt)
-        val btnSave = findViewById<Button>(R.id.btnSave)
+        // declaring all our input fields.
+        val amountInputField = findViewById<EditText>(R.id.etAmount)
+        val descriptionInputField = findViewById<EditText>(R.id.etDescription)
+        val categoryDropdown = findViewById<Spinner>(R.id.spCategory)
+        val customCategoryContainer = findViewById<View>(R.id.cardCustomCategory)
+        val customCategoryInput = findViewById<EditText>(R.id.etCustomCategory)
+        val dateInputField = findViewById<EditText>(R.id.etDate)
+        val startTimeInput = findViewById<EditText>(R.id.etStartTime)
+        val endTimeInput = findViewById<EditText>(R.id.etEndTime)
+        val uploadReceiptButton = findViewById<Button>(R.id.btnUpload)
+        receiptPreviewImage = findViewById(R.id.imgReceipt)
+        val saveExpenseButton = findViewById<Button>(R.id.btnSave)
 
-        // setting up the dropdown list for expense categories
-        val categories = mutableListOf("Food", "Transport", "Bills", "Shopping", "Other")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, categories)
-        spinner.adapter = adapter
+        // Populating the category list
+        val expenseCategories = mutableListOf("Food", "Transport", "Bills", "Shopping", "Other")
+        val categoryAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, expenseCategories)
+        categoryDropdown.adapter = categoryAdapter
 
-        // showing the custom category input field only when 'Other' is selected
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        // custom category for when the user selects "other" as category.
+        categoryDropdown.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if (categories[position] == "Other") {
-                    etCustomCategory.visibility = View.VISIBLE
-                } else {
-                    etCustomCategory.visibility = View.GONE
-                }
+                customCategoryContainer.visibility = if (expenseCategories[position] == "Other") View.VISIBLE else View.GONE
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
-        // opening a date picker dialog when the date field is clicked
-        etDate.setOnClickListener {
-            val c = Calendar.getInstance()
+        // calendar pop-up for expense entry.
+        dateInputField.setOnClickListener {
+            val calendar = Calendar.getInstance()
             DatePickerDialog(this, { _, year, month, day ->
-                // formatting and setting the selected date
-                etDate.setText(String.format("%02d/%02d/%d", day, month + 1, year))
-            }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show()
+                dateInputField.setText(String.format("%02d/%02d/%d", day, month + 1, year))
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
         }
 
-        // helper function to show a time picker dialog
-        fun showTimePicker(editText: EditText) {
-            val c = Calendar.getInstance()
+        // time picker for expense entry.
+        fun pickTime(targetField: EditText) {
+            val calendar = Calendar.getInstance()
             TimePickerDialog(this, { _, hour, minute ->
-                // formatting and setting the selected time
-                editText.setText(String.format("%02d:%02d", hour, minute))
-            }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true).show()
+                targetField.setText(String.format("%02d:%02d", hour, minute))
+            }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show()
         }
 
-        // triggering the time picker for start and end times
-        etStartTime.setOnClickListener { showTimePicker(etStartTime) }
-        etEndTime.setOnClickListener { showTimePicker(etEndTime) }
+        startTimeInput.setOnClickListener { pickTime(startTimeInput) }
+        endTimeInput.setOnClickListener { pickTime(endTimeInput) }
 
-        // launching the image gallery to pick a receipt photo
-        btnUpload.setOnClickListener {
-            pickImage.launch(arrayOf("image/*"))
+        uploadReceiptButton.setOnClickListener {
+            imagePickerLauncher.launch(arrayOf("image/*"))
         }
 
-        // handling the save button click to store the expense data
-        btnSave.setOnClickListener {
-            val amountText = etAmount.text.toString()
-            // making sure the user has entered an amount
+        // save button for an expense entry.
+        saveExpenseButton.setOnClickListener {
+            val amountText = amountInputField.text.toString()
             if (amountText.isEmpty()) {
-                Toast.makeText(this, "Please enter an amount", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Wait, how much did you spend?", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            val amount = amountText.toFloat()
+            val spentAmount = amountText.toFloat()
 
-            // check if user has enough "in my pocket" money
-            val financePref = getSharedPreferences("FinancePrefs", MODE_PRIVATE)
-            val budget = financePref.getFloat("BUDGET", 0f)
-            val db = DatabaseHelper(this)
-            val currentTotalExpenses = db.getTotalExpenses()
-            val remaining = budget - currentTotalExpenses
+            // Checking if the user has enough money left in their "Pocket".
+            val financeStorage = getSharedPreferences("FinancePrefs", MODE_PRIVATE)
+            val monthlyBudget = financeStorage.getFloat("BUDGET", 0f)
+            val database = DatabaseHelper(this)
+            val totalAlreadySpent = database.getTotalExpenses()
+            val remainingBalance = monthlyBudget - totalAlreadySpent
 
-            if (amount > remaining) {
-                Toast.makeText(this, "Insufficient funds! You only have ${String.format("%.2f", remaining)} left.", Toast.LENGTH_LONG).show()
+            if (spentAmount > remainingBalance) {
+                Toast.makeText(this, "Oops! You only have ${String.format("%.2f", remainingBalance)} left in your budget.", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
 
-            var category = spinner.selectedItem.toString()
-            // using the custom category if the user chose 'Other'
-            if (category == "Other") {
-                category = etCustomCategory.text.toString()
-                if (category.isEmpty()) category = "Other"
+            // Figure out the final category name.
+            var finalCategory = categoryDropdown.selectedItem.toString()
+            if (finalCategory == "Other") {
+                finalCategory = customCategoryInput.text.toString().ifEmpty { "Other" }
             }
 
-            val dateStr = etDate.text.toString()
-            // converting DD/MM/YYYY to YYYY-MM-DD for database sorting
-            val dbDate = if (dateStr.isNotEmpty()) {
-                val parts = dateStr.split("/")
-                if (parts.size == 3) "${parts[2]}-${parts[1]}-${parts[0]}" else dateStr
+            // Convert the date to a database-friendly format.
+            val rawDate = dateInputField.text.toString()
+            val formattedDbDate = if (rawDate.isNotEmpty()) {
+                val segments = rawDate.split("/")
+                if (segments.size == 3) "${segments[2]}-${segments[1]}-${segments[0]}" else rawDate
             } else {
                 java.text.SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
             }
 
-            // saving the new transaction into the local sqlite database
-            db.addExpense(
-                amount,
-                category,
-                etDescription.text.toString(),
-                dbDate,
-                etStartTime.text.toString(),
-                etEndTime.text.toString(),
-                receiptUri?.toString() ?: ""
+            // Save the data to our local SQLite database.
+            database.addExpense(
+                spentAmount,
+                finalCategory,
+                descriptionInputField.text.toString(),
+                formattedDbDate,
+                startTimeInput.text.toString(),
+                endTimeInput.text.toString(),
+                selectedReceiptUri?.toString() ?: ""
             )
 
-            // updating the total expenses in shared prefs for quick dashboard access
-            val pref = getSharedPreferences("FinancePrefs", MODE_PRIVATE)
-            pref.edit()
-                .putFloat("TOTAL_EXPENSE", pref.getFloat("TOTAL_EXPENSE", 0f) + amount)
+            // Update our quick-access total expense counter.
+            financeStorage.edit()
+                .putFloat("TOTAL_EXPENSE", financeStorage.getFloat("TOTAL_EXPENSE", 0f) + spentAmount)
                 .apply()
 
-            // awarding the user 10 xp points for adding a new expense
-            val userPref = getSharedPreferences("UserData", MODE_PRIVATE)
-            userPref.edit()
-                .putInt("xp", userPref.getInt("xp", 0) + 10)
+            // Rewarding the user.
+            val userGameData = getSharedPreferences("UserData", MODE_PRIVATE)
+            userGameData.edit()
+                .putInt("xp", userGameData.getInt("xp", 0) + 10)
                 .apply()
 
-            Toast.makeText(this, "Expense Saved! +10 XP", Toast.LENGTH_SHORT).show()
-            // closing the activity and going back
+            Toast.makeText(this, "Logged! +10 XP earned.", Toast.LENGTH_SHORT).show()
             finish()
         }
 
-        // setting up the bottom navigation menu
-        val nav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
-        nav.selectedItemId = R.id.nav_add
+        // Set up the bottom bar so it knows we're on the "Add Expense" screen
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNav.selectedItemId = R.id.nav_add_expense
 
-        nav.setOnItemSelectedListener {
-            when (it.itemId) {
-                R.id.nav_home -> {
-                    // going back to the home screen
-                    startActivity(Intent(this, ThirdActivity::class.java))
-                    finish()
-                    true
-                }
-                R.id.nav_add -> true
-                R.id.nav_progress -> {
-                    // going to the progress tracking screen
-                    startActivity(Intent(this, ProgressActivity::class.java))
-                    finish()
-                    true
-                }
-                R.id.nav_reports -> {
-                    // going to the expense reports screen
-                    startActivity(Intent(this, ReportActivity::class.java))
-                    finish()
-                    true
-                }
+        bottomNav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_home -> navigateAway(ThirdActivity::class.java)
+                R.id.nav_add -> navigateAway(BudgetActivity::class.java)
+                R.id.nav_progress -> navigateAway(ProgressActivity::class.java)
+                R.id.nav_add_expense -> true
                 else -> false
             }
         }
     }
 
-    // logging out the user and clearing session data
-    fun login_page(view: View) {
-        val sharedPref = getSharedPreferences("UserPrefs", MODE_PRIVATE)
-        sharedPref.edit().putBoolean("IS_LOGGED_IN", false).apply()
-
-        val intent = Intent(this, SecondActivity::class.java)
-        // clearing the navigation stack for a clean logout
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    private fun navigateAway(activity: Class<*>) : Boolean {
+        val intent = Intent(this, activity)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
         startActivity(intent)
         finish()
+        return true
+    }
+
+    private fun processUserLogout() {
+        val authPrefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        authPrefs.edit().putBoolean("IS_LOGGED_IN", false).apply()
+
+        val loginIntent = Intent(this, SecondActivity::class.java)
+        loginIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(loginIntent)
+        finish()
+    }
+    
+    // click listener for login button.
+    fun login_page(view: View?) {
+        processUserLogout()
     }
 }

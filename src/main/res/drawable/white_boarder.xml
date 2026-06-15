@@ -8,7 +8,7 @@
             <!-- The border is 2 units wide and blue -->
             <stroke
                 android:width="2dp"
-                android:color="#1E88E5" />
+                android:color="@color/primary_blue" />
             <!-- The corners are slightly rounded -->
             <corners
                 android:radius="8dp" />

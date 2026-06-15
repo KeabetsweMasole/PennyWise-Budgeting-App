@@ -11,8 +11,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class SecondActivity : AppCompatActivity() {
-
-    // initializing the login screen and applying window insets for better layout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -21,52 +19,86 @@ class SecondActivity : AppCompatActivity() {
         val mainView = findViewById<View>(R.id.main)
         ViewCompat.setOnApplyWindowInsetsListener(mainView) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
     }
 
-    // this function handles the user login attempt when the login button is clicked
+    // handling the user login attempt when the login button is clicked.
     fun home(view: View) {
+        val etUser = findViewById<EditText>(R.id.et_login_username)
+        val etEmail = findViewById<EditText>(R.id.et_login_email)
+        val etPass = findViewById<EditText>(R.id.et_login_password)
 
-        val inputUser = findViewById<EditText>(R.id.et_login_username).text.toString().trim()
-        val inputPass = findViewById<EditText>(R.id.et_login_password).text.toString().trim()
+        val inputUser = etUser.text.toString().trim()
+        val inputEmail = etEmail.text.toString().trim()
+        val inputPass = etPass.text.toString().trim()
 
-        // checking if the user left any of the login fields empty
-        if (inputUser.isEmpty() || inputPass.isEmpty()) {
-            Toast.makeText(this, "Please enter username and password", Toast.LENGTH_SHORT).show()
+        // Check for empty fields.
+        if (inputUser.isEmpty()) {
+            etUser.error = "Username is required"
+            return
+        }
+        if (inputEmail.isEmpty()) {
+            etEmail.error = "Email is required"
+            return
+        }
+        if (inputPass.isEmpty()) {
+            etPass.error = "Password is required"
             return
         }
 
-        // retrieving the locally saved registration data for verification
+        // Validate formats for consistency.
+        if (!inputUser.matches(Regex("^[a-zA-Z]+$"))) {
+            etUser.error = "Username should only contain letters"
+            return
+        }
+
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(inputEmail).matches()) {
+            etEmail.error = "Please enter a valid email address"
+            return
+        }
+
+        val passwordPattern = Regex("^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).+$")
+        if (!inputPass.matches(passwordPattern)) {
+            etPass.error = "Password must include letters, numbers, and special characters"
+            return
+        }
+
+        // retrieving the locally saved registration data for verification.
         val sharedPref = getSharedPreferences("UserPrefs", MODE_PRIVATE)
         val registeredUser = sharedPref.getString("REG_USER", "")
+        val registeredEmail = sharedPref.getString("REG_EMAIL", "")
         val registeredPass = sharedPref.getString("REG_PASS", "")
 
-        // validating the entered credentials against the stored ones
-        if (inputUser == registeredUser && inputPass == registeredPass) {
+        // Validate against stored credentials.
+        if (inputUser == registeredUser && inputEmail == registeredEmail && inputPass == registeredPass) {
+            val loadingOverlay = findViewById<View>(R.id.loadingOverlay)
+            loadingOverlay.visibility = View.VISIBLE
 
-            // saving the login state so the user doesn't have to log in again next time
-            val editor = sharedPref.edit()
-            editor.putBoolean("IS_LOGGED_IN", true)
-            editor.apply()
+            android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                // saving the login state.
+                val editor = sharedPref.edit()
+                editor.putBoolean("IS_LOGGED_IN", true)
+                editor.apply()
 
-            Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show()
-
-            // moving the user to the dashboard screen
-            val intent = Intent(this, ThirdActivity::class.java)
-            startActivity(intent)
-
-            // finishing this activity so the user cannot navigate back to login with the back button
-            finish() 
-
+                loadingOverlay.visibility = View.GONE
+                Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, ThirdActivity::class.java))
+                finish()
+            }, 600)
         } else {
-            // showing an error message if the credentials do not match
-            Toast.makeText(this, "Invalid Username or Password", Toast.LENGTH_SHORT).show()
+            // Specific error feedback.
+            if (inputUser != registeredUser) {
+                etUser.error = "User not found"
+            } else {
+                etPass.error = "Incorrect password"
+            }
+            Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show()
         }
     }
 
-    // navigating to the registration page if the user doesn't have an account
+    // navigating to the registration page if the user doesn't have an account.
     fun register_page(view: View) {
         val intent = Intent(this, FirstActivity::class.java)
         startActivity(intent)
